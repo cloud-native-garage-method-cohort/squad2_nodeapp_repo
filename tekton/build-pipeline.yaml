@@ -37,21 +37,22 @@ spec:
             - clean-install
       runAfter:
         - clone-repository
-    - name: run-tests
-      taskRef:
-        name: npm
-      workspaces:
-        - name: source
-          workspace: squad2-workspace
-      params:
-        - name: ARGS
-          value:
-            - test
-      runAfter:
-        - install-dependencies
+#    - name: run-tests
+#      taskRef:
+#        name: npm
+#      workspaces:
+#        - name: source
+#          workspace: squad2-workspace
+#      params:
+#        - name: ARGS
+#          value:
+#            - test
+#      runAfter:
+#        - install-dependencies
     - name: build-image
       runAfter:
-        - run-tests
+#        - run-tests
+        - install-dependencies
       params:
         - name: IMAGE
           value: "$(params.image-repo):$(tasks.clone-repository.results.commit)"
