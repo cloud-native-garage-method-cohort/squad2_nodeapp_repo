@@ -1,0 +1,123 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: gitops-task
+spec:
+  params:
+    - name: source-dir
+      default: /source
+    - name: app-name
+      description: name of the app
+    - name: sha
+      description: sha of the current commit
+  workspaces:
+    - name: source
+      description: contains the cloned git repo
+  steps:
+    - name: gitops-commit
+      image: quay.io/ibmgaragecloud/ibmcloud-dev:v2.0.4
+      env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: HOME
+          value: /home/devops
+        - name: GIT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: git-credentials
+              key: username
+              optional: true
+        - name: GIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: git-credentials
+              key: password
+              optional: true
+        - name: GIT_PARENT_DIR
+          valueFrom:
+            configMapKeyRef:
+              name: gitops-repo
+              key: parentdir
+              optional: true
+        - name: GIT_PARENT_DIR_SERVICES
+          valueFrom:
+            configMapKeyRef:
+              name: gitops-repo
+              key: parentdir-services
+              optional: true
+        - name: GIT_PROTOCOL
+          valueFrom:
+            configMapKeyRef:
+              name: gitops-repo
+              key: protocol
+              optional: true
+        - name: GIT_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: gitops-repo
+              key: host
+              optional: true
+        - name: GIT_ORG
+          valueFrom:
+            configMapKeyRef:
+              name: gitops-repo
+              key: org
+              optional: true
+        - name: GIT_REPO
+          valueFrom:
+            configMapKeyRef:
+              name: gitops-repo
+              key: repo
+              optional: true
+        - name: GIT_BRANCH
+          valueFrom:
+            configMapKeyRef:
+              name: gitops-repo
+              key: branch
+              optional: true
+      script: |
+        #!/usr/bin/env bash
+        set -e
+
+        APP_NAME="$(params.app-name)"
+        SHA="$(params.sha)"
+
+        BRANCH_CMD=""
+        if [[ -n "${GIT_BRANCH}" ]]; then
+          BRANCH_CMD="-b ${GIT_BRANCH}"
+        fi
+
+        PROTOCOL="${GIT_PROTOCOL}"
+        if [[ -z "${PROTOCOL}" ]]; then
+          PROTOCOL="https"
+        fi
+
+        if [[ -n "${GIT_USERNAME}" ]]; then
+          GIT_AUTH_USER="${GIT_USERNAME}"
+          GIT_AUTH_PWD="${GIT_PASSWORD}"
+        else
+          echo "Credentials for GitOps repo not set in secret gitops-cd-secret or git-credentials"
+          exit 1
+        fi
+
+        git config --global user.email "gitops@cloudnativetoolkit.dev"
+        git config --global user.name "Pipeline"
+        echo "git clone ${BRANCH_CMD} ${PROTOCOL}://${GIT_AUTH_USER}:xxxx@${GIT_HOST}/${GIT_ORG}/${GIT_REPO}"
+
+        GIT_URL="${PROTOCOL}://${GIT_AUTH_USER}:${GIT_AUTH_PWD}@${GIT_HOST}/${GIT_ORG}/${GIT_REPO}"
+        git clone ${BRANCH_CMD} ${GIT_URL} gitops_cd
+        cd gitops_cd
+
+        mkdir -p prod/${NAMESPACE}/${APP_NAME}/
+        cp ../source/k8s/manifests.yaml prod/${NAMESPACE}/${APP_NAME}/
+
+        if [[ $(git status -s | wc -l) -eq 0 ]]; then
+          echo "No changes"
+          exit 0
+        fi
+
+        git add "prod/${NAMESPACE}/${APP_NAME}/manifests.yaml"
+        git commit -m "Updates ${APP_NAME} to commit ${SHA}"
+        git push

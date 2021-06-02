@@ -1,0 +1,11 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: kspfs
+spec:
+  serviceAccountName: triggers-sa
+  triggers:
+    - bindings:
+        - ref: ks-pfs-triggerbinding
+      template:
+        name: kspfs-triggertemplate

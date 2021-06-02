@@ -1,0 +1,25 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: kspfs-triggertemplate
+spec:
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: ci-cd-pipeline-run-
+      spec:
+        serviceAccountName: build-bot
+        pipelineRef:
+          name: kuldeeps-cicd-pipeline
+        workspaces:
+          - name: kuldeeps-workspace
+            #persistentVolumeClaim:
+            # claimName: kuldeep-singh-live-pvc
+            volumeClaimTemplate:
+                spec:
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
