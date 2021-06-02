@@ -10,6 +10,6 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: kuldeep-singh-pipeline-from-scratch
+    name: squad2-app
     weight: 100
   wildcardPolicy: None

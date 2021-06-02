@@ -3,34 +3,34 @@ kind: Pipeline
 metadata:
   annotations:
     app.openshift.io/runtime: nodejs
-  name: kuldeeps-cicd-pipeline
+  name: squaad2-project-pipeline
 spec:
   workspaces:
-    - name: kuldeeps-workspace
+    - name: squad2-workspace
       description: |
         This workspace stores the cloned repository and is available to all steps
   params:
     - name: image-repo
       type: string
       description: Docker image name
-      default: quay.io/kuldeeps_ibm/express-sample-app
+      default: quay.io/kuldeeps_ibm/squad2-app
   tasks:
     - name: clone-repository
       params:
         - name: url
-          value: https://github.com/cloud-native-garage-method-cohort/kuldeeps-ci-cd-pubrepo
+          value: https://github.com/cloud-native-garage-method-cohort/squad2_nodeapp_repo
       taskRef:
         kind: Task
         name: git-clone
       workspaces:
         - name: output
-          workspace: kuldeeps-workspace
+          workspace: squad2-workspace
     - name: install-dependencies
       taskRef:
         name: npm
       workspaces:
         - name: source
-          workspace: kuldeeps-workspace
+          workspace: squad2-workspace
       params:
         - name: ARGS
           value:
@@ -42,7 +42,7 @@ spec:
         name: npm
       workspaces:
         - name: source
-          workspace: kuldeeps-workspace
+          workspace: squad2-workspace
       params:
         - name: ARGS
           value:
@@ -60,33 +60,33 @@ spec:
         name: buildah
       workspaces:
         - name: source
-          workspace: kuldeeps-workspace
+          workspace: squad2-workspace
     - name: kustomize-build
       runAfter:
         - build-image
       params:
         - name: image-with-tag
-          value: "quay.io/kuldeeps_ibm/express-sample-app=$(params.image-repo):$(tasks.clone-repository.results.commit)"
+          value: "quay.io/kuldeeps_ibm/squad2-app=$(params.image-repo):$(tasks.clone-repository.results.commit)"
       taskRef:
         kind: Task
         name: kustomize-build
       workspaces:
         - name: source
-          workspace: kuldeeps-workspace
+          workspace: squad2-workspace
     - name: test-deploy
       runAfter:
         - kustomize-build
       params:
         - name: app-namespace
-          value: kuldeep-singh-pipeline-from-scratch
+          value: squad2-project-space
         - name: app-name
-          value: kuldeep-singh-pipeline-from-scratch
+          value: squad2-app
       taskRef:
         kind: Task
         name: test-deploy
       workspaces:
         - name: source
-          workspace: kuldeeps-workspace
+          workspace: squad2-workspace
     - name: gitops
       runAfter:
         - test-deploy
@@ -95,10 +95,10 @@ spec:
         name: gitops-task
       params:
         - name: app-name
-          value: kuldeep-singh-pipeline-from-scratch
+          value: squad2-app
         - name: sha
           value: "$(tasks.clone-repository.results.commit)"
       workspaces:
         - name: source
-          workspace: kuldeeps-workspace
+          workspace: squad2-workspace
     

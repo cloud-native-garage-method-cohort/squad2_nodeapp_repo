@@ -1,19 +1,19 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
-  name: kspfs-triggertemplate
+  name: squad2-triggertemplate
 spec:
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
-        generateName: ci-cd-pipeline-run-
+        generateName: squad2-pipeline-run-
       spec:
         serviceAccountName: build-bot
         pipelineRef:
-          name: kuldeeps-cicd-pipeline
+          name: squaad2-project-pipeline
         workspaces:
-          - name: kuldeeps-workspace
+          - name: squad2-workspace
             #persistentVolumeClaim:
             # claimName: kuldeep-singh-live-pvc
             volumeClaimTemplate:

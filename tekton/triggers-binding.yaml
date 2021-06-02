@@ -1,11 +1,11 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
-  name: ks-pfs-triggerbinding
+  name: squad2-triggerbinding
 spec:
   params:
     - name: namespace
-      value: kuldeep-singh-pipeline-from-scratch
+      value: squad2-project-space
     - name: gitrepositoryurl
       value: $(body.repository.url)
     - name: gitrepositoryname

@@ -3,27 +3,27 @@ kind: Deployment
 metadata:
   annotations:
     app.openshift.io/vcs-ref: f7580aa1eb6f7176705176e201ecff4de93edafb
-    app.openshift.io/vcs-uri: https://github.com/cloud-native-garage-method-cohort/kuldeeps-ci-cd-pubrepo
+    app.openshift.io/vcs-uri: https://github.com/cloud-native-garage-method-cohort/squad2_nodeapp_repo
   labels:
-    app: kuldeep-singh-pipeline-from-scratch
-    app.kubernetes.io/instance: kuldeep-singh-pipeline-from-scratch
-    app.kubernetes.io/name: kuldeep-singh-pipeline-from-scratch
+    app: squad2-app
+    app.kubernetes.io/instance: squad2-app
+    app.kubernetes.io/name: squad2-app
     app.openshift.io/runtime: js
-  name: kuldeep-singh-pipeline-from-scratch
+  name: squad2-app-deployment
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app.kubernetes.io/instance: kuldeep-singh-pipeline-from-scratch
-      app.kubernetes.io/name: kuldeep-singh-pipeline-from-scratch
+      app.kubernetes.io/instance: squad2-app
+      app.kubernetes.io/name: squad2-app
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app.kubernetes.io/instance: kuldeep-singh-pipeline-from-scratch
-        app.kubernetes.io/name: kuldeep-singh-pipeline-from-scratch
+        app.kubernetes.io/instance: squad2-app
+        app.kubernetes.io/name: squad2-app
     spec:
       containers:
         - env:
@@ -31,7 +31,7 @@ spec:
             - name: PROTOCOLS
             - name: LOG_LEVEL
               value: debug
-          image: quay.io/kuldeeps_ibm/express-sample-app
+          image: quay.io/kuldeeps_ibm/squad2-app
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
@@ -42,7 +42,7 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
-          name: kuldeep-singh-pipeline-from-scratch
+          name: squad2-app
           ports:
             - containerPort: 3000
               name: http

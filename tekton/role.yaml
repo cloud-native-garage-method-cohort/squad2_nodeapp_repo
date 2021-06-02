@@ -1,8 +1,8 @@
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
-  name: kuldeeps-pfs-imagestream
-  namespace: kuldeep-singh-pipeline-from-scratch
+  name: squad2-imagestream
+  namespace: squad2-project-space
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role

@@ -1,11 +1,11 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
-  name: kspfs
+  name: squad2-evnt-lstnr
 spec:
   serviceAccountName: triggers-sa
   triggers:
     - bindings:
-        - ref: ks-pfs-triggerbinding
+        - ref: squad2-triggerbinding
       template:
-        name: kspfs-triggertemplate
+        name: squad2-triggertemplate

@@ -6,6 +6,6 @@ data:
   branch: main
   host: github.com
   protocol: https
-  repo: kuldeeps-gitops
+  repo: squad2_gitops_repo
   org: cloud-native-garage-method-cohort
   parentdir: bash -c 'echo qa/$(basename ${NAMESPACE} -dev)'
