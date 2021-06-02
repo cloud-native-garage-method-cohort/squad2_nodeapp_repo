@@ -10,6 +10,6 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: squad2-app
+    name: squad2-app-svc
     weight: 100
   wildcardPolicy: None
