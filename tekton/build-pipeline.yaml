@@ -3,7 +3,7 @@ kind: Pipeline
 metadata:
   annotations:
     app.openshift.io/runtime: nodejs
-  name: squaad2-project-pipeline
+  name: squad2-project-pipeline
 spec:
   workspaces:
     - name: squad2-workspace

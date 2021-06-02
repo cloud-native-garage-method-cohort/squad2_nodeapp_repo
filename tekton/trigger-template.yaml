@@ -11,7 +11,7 @@ spec:
       spec:
         serviceAccountName: build-bot
         pipelineRef:
-          name: squaad2-project-pipeline
+          name: squad2-project-pipeline
         workspaces:
           - name: squad2-workspace
             #persistentVolumeClaim:
